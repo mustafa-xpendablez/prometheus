@@ -1,5 +1,5 @@
 "use strict";
-angular.module('myApp.login', ['firebase.utils', 'firebase.auth', 'ngRoute'])
+angular.module('myApp.login', ['firebase.utils', 'firebase.auth', 'ngRoute', 'facebook'])
 
         .config(['$routeProvider', function ($routeProvider) {
                 $routeProvider.when('/login', {
@@ -8,11 +8,23 @@ angular.module('myApp.login', ['firebase.utils', 'firebase.auth', 'ngRoute'])
                 });
             }])
 
-        .controller('LoginCtrl', ['$scope', 'Auth', '$location', 'fbutil', function ($scope, Auth, $location, fbutil) {
+        .config(function (FacebookProvider) {
+            // Set your appId through the setAppId method or
+            // use the shortcut in the initialize method directly.
+            FacebookProvider.init('765747760192870');
+        })
+        .controller('LoginCtrl', ['$scope', 'Auth', '$location', 'fbutil', 'Facebook', function ($scope, Auth, $location, fbutil, Facebook) {
                 $scope.email = null;
                 $scope.pass = null;
                 $scope.confirm = null;
                 $scope.createMode = false;
+
+                $scope.fb = function () {
+                    // From now on you can use the Facebook service just as Facebook api says
+                    Facebook.login(function (response) {
+                        console.log('fb response', response);
+                    });
+                };
 
                 $scope.login = function (email, pass) {
                     $scope.err = null;
